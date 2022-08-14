@@ -1,0 +1,34 @@
+name: Build bootstrap binaries for glibc on Linux
+
+# FILL in
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/nightly-linux.yml
+      - Library/Homebrew/glibc-bootstrap/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    container: 'debian7'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t #{{ container }} .
+        working-directory: Library/Homebrew/glibc-bootstrap
+
+      - name: Build binaries
+        run: docker run --rm --user linuxbrew -w /home/linuxbrew -v $(pwd)/Library/Homebrew/glibc-bootstrap/build-binaries.sh:/home/linuxbrew/build-binaries.sh ${{container}} /bin/bash -c "/home/linuxbrew/build-binaries.sh"
+
+      - name: Copy binaries from container
+        run: docker cp ${{github.sha}}:/home/linuxbrew/bootstrap-binaries .
+
+      - name: Upload binaries to GitHub Actions
+        uses: actions/upload-artifact@v2
+        with: 
+          name: Bootstrap binaries
+          path: bootstrap-binaries
