@@ -5,7 +5,7 @@ name: Build bootstrap binaries for glibc on Linux
 on:
   pull_request:
     paths:
-      - .github/workflows/nightly-linux.yml
+      - .github/workflows/build.yml
       - Library/Homebrew/glibc-bootstrap/**
 
 jobs:
@@ -13,16 +13,28 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-    container: 'debian7'
+      matrix:
+        binary: [
+          "bison",
+          "gawk",
+          "gcc",
+          "make",
+          "python3",
+          "sed",]
+        include:
+          - container: debian7
     steps:
       - uses: actions/checkout@v2
 
       - name: Build Docker image
-        run: docker build -t #{{ container }} .
-        working-directory: Library/Homebrew/glibc-bootstrap
+        run: docker build -t ${{matrix.container}} .
+        working-directory: Library/Homebrew/glibc-bootstrap/debian7
 
-      - name: Build binaries
-        run: docker run --rm --user linuxbrew -w /home/linuxbrew -v $(pwd)/Library/Homebrew/glibc-bootstrap/build-binaries.sh:/home/linuxbrew/build-binaries.sh ${{container}} /bin/bash -c "/home/linuxbrew/build-binaries.sh"
+      - name: Run Docker container
+        run: docker run --rm --detach --user linuxbrew --name ${{github.sha}} -w /home/linuxbrew -v $(pwd)/Library/Homebrew/glibc-bootstrap:/home/linuxbrew/glibc-bootstrap ${{matrix.container}} sleep inf
+
+      - name: Build ${{matrix.binary}}
+        run: docker exec ${{github.sha}} /bin/bash -c "/home/linuxbrew/glibc-bootstrap/build-${{matrix.binary}}.sh"
 
       - name: Copy binaries from container
         run: docker cp ${{github.sha}}:/home/linuxbrew/bootstrap-binaries .
