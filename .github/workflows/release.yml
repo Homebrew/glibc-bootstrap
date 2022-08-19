@@ -1,0 +1,38 @@
+name: Upload new release
+
+on:
+  pull_request:
+  # Add these back when everything works
+  #  workflow_dispatch:
+  #  inputs:
+  #    tag:
+  #      description: Version to use for release tag
+  #      required: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{github.event.inputs.tag}}
+    steps:
+      - name: Download binaries from GitHub Actions
+        uses: actions/download-artifact@v3
+        with:
+          name: Bootstrap binaries
+          path: bootstrap-binaries
+
+      - name: Push tag
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${TAG}" --notes "Bootstrap binaries ${TAG}" --target "$(git rev-parse --verify HEAD)"
+
+      - name: Upload to GitHub Releases
+        working-directory: bootstrap-binaries
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: gh release upload "${TAG}" .
