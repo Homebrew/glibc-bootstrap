@@ -3,11 +3,11 @@ name: Build bootstrap binaries for glibc on Linux
 on:
   workflow_call:
 
-  pull_request:
-    paths:
-      - .github/workflows/build.yml
-      - 'build-*.sh'
-      - debian7/Dockerfile
+    #  pull_request:
+    #paths:
+    #  - .github/workflows/build.yml
+    #  - 'build-*.sh'
+    #  - debian7/Dockerfile
 
 jobs:
   build:
