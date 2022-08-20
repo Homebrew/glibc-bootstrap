@@ -17,7 +17,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      TAG: ${{github.event.inputs.tag}}
+      #TAG: ${{github.event.inputs.tag}}
+      TAG: 1.0.0
     steps:
       - name: Download binaries from GitHub Actions
         uses: actions/download-artifact@v3
