@@ -20,6 +20,8 @@ jobs:
       #TAG: ${{github.event.inputs.tag}}
       TAG: 1.0.0
     steps:
+      - uses: actions/checkout@v2
+
       - name: Download binaries from GitHub Actions
         uses: actions/download-artifact@v3
         with:
