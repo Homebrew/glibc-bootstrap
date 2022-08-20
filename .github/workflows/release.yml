@@ -8,6 +8,7 @@ on:
   #    tag:
   #      description: Version to use for release tag
   #      required: true
+  
 
 jobs:
   build:
@@ -16,6 +17,7 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    permissions: write-all
     env:
       #TAG: ${{github.event.inputs.tag}}
       TAG: 1.0.0
