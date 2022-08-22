@@ -24,7 +24,7 @@ GitHub Actions is used to build the binaries in CI.  To build them locally:
 ```
 # Clone the repository
 git clone https://github.com/Homebrew/glibc-bootstrap
-cd glibc-bootsrap
+cd glibc-bootstrap
 
 # Build the Docker image.
 docker build --tag debian7 debian7
