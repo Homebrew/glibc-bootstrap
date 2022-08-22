@@ -1,14 +1,11 @@
 name: Upload new release
 
 on:
-  pull_request:
-  # Add these back when everything works
-  #  workflow_dispatch:
-  #  inputs:
-  #    tag:
-  #      description: Version to use for release tag
-  #      required: true
-  
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Version to use for release tag
+        required: true
 
 jobs:
   build:
@@ -17,10 +14,11 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
     env:
-      #TAG: ${{github.event.inputs.tag}}
-      TAG: 1.0.0
+      GH_TOKEN: ${{github.token}}
+      TAG: ${{github.event.inputs.tag}}
     steps:
       - uses: actions/checkout@v2
 
@@ -31,13 +29,7 @@ jobs:
           path: bootstrap-binaries
 
       - name: Push tag
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          gh release create "${TAG}" --notes "Bootstrap binaries ${TAG}" --target "$(git rev-parse --verify HEAD)"
+        run: gh release create "$TAG" --generate-notes
 
       - name: Upload to GitHub Releases
-        working-directory: bootstrap-binaries
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: gh release upload "${TAG}" .
+        run: gh release upload "$TAG" bootstrap-binaries/*.tar.gz
