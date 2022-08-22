@@ -6,6 +6,7 @@ on:
       - .github/workflows/build.yml
       - "build-*.sh"
       - debian7/Dockerfile
+  workflow_call:
 
 jobs:
   build:
