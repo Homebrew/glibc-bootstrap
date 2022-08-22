@@ -1,13 +1,11 @@
 name: Build bootstrap binaries for glibc on Linux
 
 on:
-  workflow_call:
-
-    #  pull_request:
-    #paths:
-    #  - .github/workflows/build.yml
-    #  - 'build-*.sh'
-    #  - debian7/Dockerfile
+  pull_request:
+    paths:
+      - .github/workflows/build.yml
+      - "build-*.sh"
+      - debian7/Dockerfile
 
 jobs:
   build:
@@ -15,15 +13,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        binary: [
-          "binutils",
-          "bison",
-          "gawk",
-          "gcc",
-          "make",
-          "python3",
-          "sed",
-        ]
+        binary:
+          - binutils
+          - bison
+          - gawk
+          - gcc
+          - make
+          - python3
+          - sed
         include:
           - container: debian7
     steps:
@@ -44,6 +41,6 @@ jobs:
 
       - name: Upload binaries to GitHub Actions
         uses: actions/upload-artifact@v3
-        with: 
+        with:
           name: Bootstrap binaries
           path: bootstrap-binaries
