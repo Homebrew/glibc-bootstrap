@@ -1,12 +1,11 @@
 name: Build bootstrap binaries for glibc on Linux
 
-# FILL in
-
 on:
   pull_request:
     paths:
       - .github/workflows/build.yml
-      - Library/Homebrew/glibc-bootstrap/**
+      - "build-*.sh"
+      - debian7/Dockerfile
 
 jobs:
   build:
@@ -14,24 +13,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        binary: [
-          "bison",
-          "gawk",
-          "gcc",
-          "make",
-          "python3",
-          "sed",]
+        binary:
+          - binutils
+          - bison
+          - gawk
+          - gcc
+          - make
+          - python3
+          - sed
         include:
           - container: debian7
     steps:
       - uses: actions/checkout@v2
 
       - name: Build Docker image
-        run: docker build -t ${{matrix.container}} .
-        working-directory: Library/Homebrew/glibc-bootstrap/debian7
+        run: docker build --tag ${{matrix.container}} .
+        working-directory: debian7
 
       - name: Run Docker container
-        run: docker run --rm --detach --user linuxbrew --name ${{github.sha}} -w /home/linuxbrew -v $(pwd)/Library/Homebrew/glibc-bootstrap:/home/linuxbrew/glibc-bootstrap ${{matrix.container}} sleep inf
+        run: docker run --rm --detach --user linuxbrew --name ${{github.sha}} --workdir /home/linuxbrew --volume $(pwd):/home/linuxbrew/glibc-bootstrap ${{matrix.container}} sleep inf
 
       - name: Build ${{matrix.binary}}
         run: docker exec ${{github.sha}} /bin/bash -c "/home/linuxbrew/glibc-bootstrap/build-${{matrix.binary}}.sh"
@@ -40,7 +40,7 @@ jobs:
         run: docker cp ${{github.sha}}:/home/linuxbrew/bootstrap-binaries .
 
       - name: Upload binaries to GitHub Actions
-        uses: actions/upload-artifact@v2
-        with: 
+        uses: actions/upload-artifact@v3
+        with:
           name: Bootstrap binaries
           path: bootstrap-binaries
