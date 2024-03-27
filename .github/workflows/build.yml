@@ -25,7 +25,7 @@ jobs:
         include:
           - container: debian7
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Build Docker image
         run: docker build --tag ${{matrix.container}} .
@@ -41,7 +41,7 @@ jobs:
         run: docker cp ${{github.sha}}:/home/linuxbrew/bootstrap-binaries .
 
       - name: Upload binaries to GitHub Actions
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Bootstrap binaries
+          name: bootstrap-${{matrix.binary}}
           path: bootstrap-binaries
