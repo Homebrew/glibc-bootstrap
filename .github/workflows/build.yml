@@ -5,12 +5,11 @@ on:
     paths:
       - .github/workflows/build.yml
       - "build-*.sh"
-      - debian7/Dockerfile
+      - Dockerfile*
   workflow_call:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -22,28 +21,38 @@ jobs:
           - make
           - python3
           - sed
+        arch:
+          - x86_64
+          - arm64
         include:
-          - container: debian7
+          - arch: x86_64
+            runs-on: ubuntu-latest
+          - arch: arm64
+            runs-on: ubuntu-24.04-arm
+    runs-on: ${{matrix.runs-on}}
+    name: ${{matrix.binary}} (${{matrix.arch}})
+    env:
+      ARCH: ${{matrix.arch}}
+      BINARY: ${{matrix.binary}}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
 
       - name: Build Docker image
-        run: docker build --tag ${{matrix.container}} .
-        working-directory: debian7
+        run: docker build --tag glibc-bootstrap --file "Dockerfile.$ARCH" .
 
       - name: Run Docker container
-        run: docker run --rm --detach --user linuxbrew --name ${{github.sha}} --workdir /home/linuxbrew --volume "$(pwd):/home/linuxbrew/glibc-bootstrap" ${{matrix.container}} sleep inf
+        run: docker run --rm --detach --user linuxbrew --name "$GITHUB_SHA" --workdir /home/linuxbrew --volume "$(pwd):/home/linuxbrew/glibc-bootstrap" glibc-bootstrap sleep inf
 
       - name: Build ${{matrix.binary}}
-        run: docker exec ${{github.sha}} /bin/bash -c "/home/linuxbrew/glibc-bootstrap/build-${{matrix.binary}}.sh"
+        run: docker exec "$GITHUB_SHA" /bin/bash -c "/home/linuxbrew/glibc-bootstrap/build-$BINARY.sh"
 
       - name: Copy binaries from container
-        run: docker cp ${{github.sha}}:/home/linuxbrew/bootstrap-binaries .
+        run: docker cp "$GITHUB_SHA":/home/linuxbrew/bootstrap-binaries .
 
       - name: Upload binaries to GitHub Actions
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
-          name: bootstrap-${{matrix.binary}}
+          name: bootstrap-${{matrix.arch}}-${{matrix.binary}}
           path: bootstrap-binaries
