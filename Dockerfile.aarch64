@@ -1,0 +1,17 @@
+FROM centos:7
+
+RUN sed -e 's/mirror\.centos\.org/vault\.centos\.org/g' \
+        -e 's/^mirrorlist=/#mirrorlist=/g' \
+        -e 's/^#\s*baseurl=/baseurl=/g' \
+        -i /etc/yum.repos.d/CentOS-*.repo \
+  && yum install -y @development bzip2 ca-certificates texinfo wget zlib-devel \
+  && yum clean all
+
+RUN useradd --create-home --shell /bin/bash linuxbrew
+
+ENV CFLAGS="-march=armv8-a -O2"
+ENV CXXFLAGS="-march=armv8-a -O2"
+ENV PREFIX=/tmp/homebrew
+RUN su - linuxbrew --command 'mkdir --parents /tmp/homebrew'
+ENV PKGDIR=/home/linuxbrew/bootstrap-binaries
+RUN su - linuxbrew --command 'mkdir --parents /home/linuxbrew/bootstrap-binaries'

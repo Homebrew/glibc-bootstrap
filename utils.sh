@@ -16,9 +16,10 @@ verify_checksum() {
 package() {
   PKGNAME="$1"
   VERSION="$2"
+  ARCH="$(uname -m)"
 
   tar --directory "$PREFIX" \
     --create --gzip --verbose \
-    --file "$PKGDIR/bootstrap-$PKGNAME-$VERSION.tar.gz" .
+    --file "$PKGDIR/bootstrap-$ARCH-$PKGNAME-$VERSION.tar.gz" .
   find "$PREFIX" -mindepth 1 -delete
 }
