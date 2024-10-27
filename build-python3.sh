@@ -3,8 +3,8 @@
 set -e
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-VERSION=3.9.13
-SHA256SUM=125b0c598f1e15d2aa65406e83f792df7d171cdf38c16803b149994316a3080f
+VERSION=3.11.10
+SHA256SUM=07a4356e912900e61a15cb0949a06c4a05012e213ecd6b4e84d0f67aabbee372
 
 # Build Python 3
 wget --no-check-certificate https://www.python.org/ftp/python/$VERSION/Python-$VERSION.tar.xz
