@@ -17,7 +17,7 @@ cd gcc-$VERSION
 ./contrib/download_prerequisites
 
 # Disable building documentation
-gcc_cv_prog_makeinfo_modern=no
+export gcc_cv_prog_makeinfo_modern=no
 
 mkdir build
 cd build
