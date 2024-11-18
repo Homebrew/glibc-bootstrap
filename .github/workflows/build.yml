@@ -32,7 +32,7 @@ jobs:
         working-directory: debian7
 
       - name: Run Docker container
-        run: docker run --rm --detach --user linuxbrew --name ${{github.sha}} --workdir /home/linuxbrew --volume $(pwd):/home/linuxbrew/glibc-bootstrap ${{matrix.container}} sleep inf
+        run: docker run --rm --detach --user linuxbrew --name ${{github.sha}} --workdir /home/linuxbrew --volume "$(pwd):/home/linuxbrew/glibc-bootstrap" ${{matrix.container}} sleep inf
 
       - name: Build ${{matrix.binary}}
         run: docker exec ${{github.sha}} /bin/bash -c "/home/linuxbrew/glibc-bootstrap/build-${{matrix.binary}}.sh"
