@@ -17,6 +17,8 @@ package() {
   PKGNAME="$1"
   VERSION="$2"
 
-  tar -C "$PREFIX" -czvf "$PKGDIR/bootstrap-$PKGNAME-$VERSION.tar.gz" .
+  tar --directory "$PREFIX" \
+    --create --gzip --verbose \
+    --file "$PKGDIR/bootstrap-$PKGNAME-$VERSION.tar.gz" .
   find "$PREFIX" -mindepth 1 -delete
 }
