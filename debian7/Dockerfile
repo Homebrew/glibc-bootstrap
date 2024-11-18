@@ -2,7 +2,8 @@ FROM debian/eol:wheezy
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-  && apt-get install -y build-essential bzip2 libz-dev texinfo wget
+  && apt-get install -y build-essential bzip2 ca-certificates libz-dev texinfo wget \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --shell /bin/bash linuxbrew
 
