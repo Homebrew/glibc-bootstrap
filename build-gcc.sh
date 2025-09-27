@@ -38,6 +38,8 @@ cd build
   --disable-libvtv \
   --disable-threads \
   --disable-multilib \
+  --enable-multiarch \
+  --enable-standard-branch-protection \
   --with-newlib \
   --without-headers
 make
