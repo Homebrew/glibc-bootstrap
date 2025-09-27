@@ -38,6 +38,7 @@ cd build
   --disable-libvtv \
   --disable-threads \
   --disable-multilib \
+  --enable-multiarch \
   --with-newlib \
   --without-headers
 make
