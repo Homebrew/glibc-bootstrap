@@ -7,7 +7,8 @@ on:
         description: Version to use for release tag
         required: true
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   build:
