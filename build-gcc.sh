@@ -3,8 +3,8 @@
 set -e
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-VERSION=9.5.0
-SHA256SUM=27769f64ef1d4cd5e2be8682c0c93f9887983e6cfd1a927ce5a0a2915a95cf8f
+VERSION=10.5.0
+SHA256SUM=25109543fdf46f397c347b5d8b7a2c7e5694a5a51cce4b9c6e1ea8a71ca307c1
 
 # Build GCC
 wget --no-check-certificate https://ftp.gnu.org/gnu/gcc/gcc-$VERSION/gcc-$VERSION.tar.xz
