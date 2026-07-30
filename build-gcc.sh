@@ -38,6 +38,7 @@ cd build
   --disable-libvtv \
   --disable-threads \
   --disable-multilib \
+  --enable-cet=auto \
   --enable-multiarch \
   --enable-standard-branch-protection \
   --with-newlib \
