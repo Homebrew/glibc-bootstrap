@@ -3,8 +3,8 @@
 set -e
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-VERSION=4.9
-SHA256SUM=6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181
+VERSION=4.10
+SHA256SUM=b8e72182b2ec96a3574e2998c47b7aaa64cc20ce000d8e9ac313cc07cecf28c7
 
 # Build sed
 wget --no-check-certificate https://ftp.gnu.org/gnu/sed/sed-$VERSION.tar.xz
