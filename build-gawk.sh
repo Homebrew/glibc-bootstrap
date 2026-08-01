@@ -3,8 +3,8 @@
 set -e
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-VERSION=5.3.1
-SHA256SUM=694db764812a6236423d4ff40ceb7b6c4c441301b72ad502bb5c27e00cd56f78
+VERSION=5.4.1
+SHA256SUM=07f6f7342b7febe4313fc2c2542ad93d64fe20ad8717200109f105a826f5fd37
 
 # Build gawk
 wget --no-check-certificate https://ftp.gnu.org/gnu/gawk/gawk-$VERSION.tar.xz
