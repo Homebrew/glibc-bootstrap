@@ -1,11 +1,11 @@
 FROM centos:6
 
+# Need newer GCC and GAS (binutils) to build with CET support
 RUN sed -e 's/mirror\.centos\.org/vault\.centos\.org/g' \
         -e 's/^mirrorlist=/#mirrorlist=/g' \
         -e 's/^#\s*baseurl=/baseurl=/g' \
         -i /etc/yum.repos.d/CentOS-*.repo \
   && yum install -y @development bzip2 ca-certificates texinfo wget zlib-devel \
-  # Need newer GCC and GAS (binutils) to build with CET support
   && yum install -y centos-release-scl-rh \
   && sed -e 's/mirror\.centos\.org/vault\.centos\.org/g' \
          -e 's/^mirrorlist=/#mirrorlist=/g' \
@@ -16,7 +16,7 @@ RUN sed -e 's/mirror\.centos\.org/vault\.centos\.org/g' \
 
 RUN useradd --create-home --shell /bin/bash linuxbrew
 
-ENV PATH=/opt/rh/devtoolset-9/root/usr/bin:${PATH}
+ENV BASH_ENV=/opt/rh/devtoolset-9/enable
 ENV CFLAGS="-march=core2 -O2"
 ENV CXXFLAGS="-march=core2 -O2"
 ENV PREFIX=/tmp/homebrew
