@@ -3,8 +3,8 @@
 set -e
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-VERSION=2.43.1
-SHA256SUM=13f74202a3c4c51118b797a39ea4200d3f6cfbe224da6d1d95bb938480132dfd
+VERSION=2.47
+SHA256SUM=154ab23b60070e8f27013c22977f1129425d67d1e8acd6e13010e617811e4cff
 
 # Build binutils
 wget --no-check-certificate https://ftp.gnu.org/gnu/binutils/binutils-$VERSION.tar.xz
@@ -19,7 +19,6 @@ cd binutils-$VERSION
   --enable-interwork \
   --enable-multilib \
   --enable-64-bit-bfd \
-  --enable-targets=all \
   --disable-gprofng \
   --disable-nls
 
