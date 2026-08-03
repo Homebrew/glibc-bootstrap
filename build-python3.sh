@@ -13,7 +13,13 @@ verify_checksum Python-$VERSION.tar.xz $SHA256SUM
 tar --extract --file Python-$VERSION.tar.xz
 cd Python-$VERSION
 
-./configure --prefix="${PREFIX}" ac_cv_search_crypt=no ac_cv_search_crypt_r=no
+./configure \
+  --prefix="${PREFIX}" \
+  --disable-test-modules \
+  --without-ensurepip \
+  --without-static-libpython \
+  ac_cv_search_crypt=no \
+  ac_cv_search_crypt_r=no
 make
 make install
 
