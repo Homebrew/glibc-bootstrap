@@ -1,12 +1,22 @@
-FROM debian/eol:wheezy
-ARG DEBIAN_FRONTEND=noninteractive
+FROM centos:6
 
-RUN apt-get update \
-  && apt-get install -y build-essential bzip2 ca-certificates libz-dev texinfo wget \
-  && rm -rf /var/lib/apt/lists/*
+# Need newer GCC and GAS (binutils) to build with CET support
+RUN sed -e 's/mirror\.centos\.org/vault\.centos\.org/g' \
+        -e 's/^mirrorlist=/#mirrorlist=/g' \
+        -e 's/^#\s*baseurl=/baseurl=/g' \
+        -i /etc/yum.repos.d/CentOS-*.repo \
+  && yum install -y @development bzip2 ca-certificates texinfo wget zlib-devel \
+  && yum install -y centos-release-scl-rh \
+  && sed -e 's/mirror\.centos\.org/vault\.centos\.org/g' \
+         -e 's/^mirrorlist=/#mirrorlist=/g' \
+         -e 's/^#\s*baseurl=/baseurl=/g' \
+         -i /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo \
+  && yum install -y devtoolset-9-gcc devtoolset-9-gcc-c++ devtoolset-9-binutils \
+  && yum clean all
 
 RUN useradd --create-home --shell /bin/bash linuxbrew
 
+ENV BASH_ENV=/opt/rh/devtoolset-9/enable
 ENV CFLAGS="-march=core2 -O2"
 ENV CXXFLAGS="-march=core2 -O2"
 ENV PREFIX=/tmp/homebrew
