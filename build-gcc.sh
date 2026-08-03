@@ -3,8 +3,9 @@
 set -e
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-VERSION=10.5.0
-SHA256SUM=25109543fdf46f397c347b5d8b7a2c7e5694a5a51cce4b9c6e1ea8a71ca307c1
+# GCC 12 provides support for -D_FORTIFY_SOURCE=3
+VERSION=12.5.0
+SHA256SUM=71cd373d0f04615e66c5b5b14d49c1a4c1a08efa7b30625cd240b11bab4062b3
 
 # Build GCC
 wget --no-check-certificate https://ftp.gnu.org/gnu/gcc/gcc-$VERSION/gcc-$VERSION.tar.xz
@@ -44,7 +45,7 @@ cd build
   --with-newlib \
   --without-headers
 make
-make install
+make install-strip
 
 cd ../..
 rm --recursive --force gcc-$VERSION
