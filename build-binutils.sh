@@ -1,7 +1,8 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
+prepare_build
 
 VERSION=2.47
 SHA256SUM=154ab23b60070e8f27013c22977f1129425d67d1e8acd6e13010e617811e4cff
@@ -14,7 +15,6 @@ tar --extract --file binutils-$VERSION.tar.xz
 cd binutils-$VERSION
 ./configure --prefix="${PREFIX}" \
   --enable-deterministic-archives \
-  --prefix="${PREFIX}" \
   --disable-werror \
   --enable-interwork \
   --enable-multilib \
@@ -22,7 +22,7 @@ cd binutils-$VERSION
   --disable-gprofng \
   --disable-nls
 
-make
+make -j"$BUILD_JOBS"
 make install
 cd ..
 rm -rf binutils-$VERSION

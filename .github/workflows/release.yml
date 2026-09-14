@@ -6,19 +6,31 @@ on:
       tag:
         description: Version to use for release tag
         required: true
+        type: string
 
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash -euo pipefail {0}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   build:
-    uses: ./.github/workflows/build.yml
+    # actionlint does not yet accept $/ workflow calls.
+    uses: ./.github/workflows/build.yml # zizmor: ignore[self-repository]
 
   release:
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      attestations: write
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -31,8 +43,18 @@ jobs:
           path: bootstrap-binaries
           merge-multiple: true
 
+      - name: Validate release
+        run: bash .github/scripts/release.sh --validate-only
+        env:
+          TAG: ${{github.event.inputs.tag}}
+
+      - name: Generate build provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: bootstrap-binaries/*.tar.gz
+
       - name: Create release
-        run: gh release create "$TAG" --generate-notes bootstrap-binaries/*.tar.gz
+        run: bash .github/scripts/release.sh
         env:
           GH_TOKEN: ${{github.token}}
           TAG: ${{github.event.inputs.tag}}

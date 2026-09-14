@@ -1,7 +1,8 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
+prepare_build
 
 # GCC 12 provides support for -D_FORTIFY_SOURCE=3
 VERSION=12.5.0
@@ -30,6 +31,7 @@ cd build
   --disable-werror \
   --disable-nls \
   --disable-bootstrap \
+  --disable-lto \
   --disable-decimal-float \
   --disable-libatomic \
   --disable-libgomp \
@@ -44,7 +46,7 @@ cd build
   --enable-standard-branch-protection \
   --with-newlib \
   --without-headers
-make
+make -j"$BUILD_JOBS"
 make install-strip
 
 cd ../..
