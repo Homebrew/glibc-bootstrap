@@ -1,7 +1,8 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
+prepare_build
 
 M4_VERSION=1.4.21
 M4_SHA256SUM=f25c6ab51548a73a75558742fb031e0625d6485fe5f9155949d6486a2408ab66
@@ -15,7 +16,7 @@ verify_checksum m4-$M4_VERSION.tar.xz $M4_SHA256SUM
 tar --extract --file m4-$M4_VERSION.tar.xz
 cd m4-$M4_VERSION
 ./configure --prefix="${PREFIX}"
-make
+make -j"$BUILD_JOBS"
 make install
 cd ..
 rm --recursive --force m4-$M4_VERSION
@@ -27,6 +28,7 @@ verify_checksum bison-$BISON_VERSION.tar.xz $BISON_SHA256SUM
 tar --extract --file bison-$BISON_VERSION.tar.xz
 cd bison-$BISON_VERSION
 ./configure --prefix="${PREFIX}" M4="${PREFIX}/bin/m4"
+make -j"$BUILD_JOBS"
 make install
 cd ..
 rm --recursive --force bison-$BISON_VERSION
